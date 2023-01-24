@@ -1,0 +1,156 @@
+-->1. Can you provide an example of a custom exception class in C++?
+#include <iostream>
+#include <exception>
+
+class Exception : public std::exception
+{
+    public:
+        Exception(const char* message) : message_(message) {}
+        virtual const char* what() const throw() 
+		{
+            return message_;
+        }
+
+    private:
+        const char* message_;
+};
+void doSomething() 
+{
+    throw Exception("Something went wrong!");
+}
+int main() 
+{
+    try {
+        doSomething();
+    } catch (Exception& e) 
+	{
+        std::cout << e.what() << std::endl;
+    }
+    return 0;
+}
+
+
+-->2. What happens if an exception is not caught in a C++ program?
+If an exception is not caught in a C++ program, the program will terminate. The program will unwind the stack, destroying all objects that were created in the stack 
+frame of the function that threw the exception, and any objects that were created in the stack frames of the functions that were called by the function that threw 
+the exception.
+When an exception is thrown and not caught, the program will search for an exception handler in the current function. If it doesn't find one, it will then search the 
+call stack for a handler. The search continues until it reaches the top of the stack, where it terminates the program, if no catch block is found.
+Additionally, the program will invoke the std::terminate function, which will call the std::abort function, which will cause the program to terminate abruptly. 
+This function can be overridden to provide a custom behavior when an exception is not caught.
+It is important to catch and handle exceptions in a C++ program to prevent the program from terminating unexpectedly, and to provide a meaningful message to the 
+user about what went wrong and how to fix it. It's a good practice to catch the exception as close as possible to the point where it was thrown in order to 
+handle it properly.
+
+
+-->3. What is the difference between a try-catch block and a try-throw-catch block?
+A try-catch block is used to handle exceptions that are thrown by the code within the try block. The try block contains the code that may throw an exception, 
+and the catch block contains the code that will be executed when an exception is caught. The catch block is executed when an exception is thrown that matches 
+the type specified in the catch statement.
+A try-throw-catch block is a variation of the try-catch block, where the throw statement is used within the try block to throw an exception explicitly. 
+The catch block is used to handle the exception that is thrown by the throw statement.
+Here is an example of a try-catch block:
+
+try {
+    // code to throw an exception
+} catch (ExceptionType e) {
+    // code to handles the exception
+}
+
+And here is an example of a try-throw-catch block:
+
+try {
+    // code to may throw an exception
+    if (some_condition) {
+        throw ExceptionType("Error message");
+    }
+} catch (ExceptionType e) {
+    // code to handles the exception
+}
+In both cases, the catch block is executed when an exception is thrown, but the difference is that in the try-catch block, the exception is thrown by the 
+code within the try block, whereas in the try-throw-catch block, the exception is explicitly thrown by the throw statement.
+The use of try-catch block is to catch and handle the exception thrown by the code within the try block, whereas the use of try-throw-catch block is to 
+throw an exception explicitly, and catch and handle it in the catch block.
+
+
+-->4.How do you re-throw an exception in C++? WITH EXAMPLE
+In C++, you can re-throw an exception by using the keyword throw without specifying an exception object. When you use the throw keyword without an object, 
+it rethrows the current exception. 
+Here's an example of re-throwing an exception:
+#include<iostream>
+using namespace std;
+void functionA() 
+{
+    try 
+    {
+        // code to throw an exception
+        throw std::exception();
+    } 
+    catch (std::exception& e) 
+    {
+        // code to handle the exception
+        throw; // re-throwing the exception
+    }
+}
+int main() 
+{
+    try 
+    {
+        functionA();
+    } 
+    catch (std::exception& e) 
+    {
+        // code to handle the re-thrown exception
+    }
+    return 0;
+}
+
+In this example, the function functionA throws an exception of type std::exception and it's caught by the catch block. Then, the throw; statement is used to 
+re-throw the exception. The re-thrown exception will be caught by the catch block in the main function.
+It's important to note that when you re-throw an exception, the program will lose the original location of the exception, and the stack trace will point to 
+the location where the exception is re-thrown. This can make it more difficult to determine where the original exception occurred, so it's recommended to use 
+it only when it's necessary.
+
+
+-->5. OUTPUT OF THE FOLLOWING PROGRAM.
+  #include <iostream>  
+#include <exception>  
+using namespace std;  
+class MyException : public exception{  
+    public:  
+        const char * what() const throw()  
+        {  
+            return "Attempted to divide by zero!\n";  
+        }  
+};  
+int main()  
+{  
+    try  
+    {  
+        int x, y;  
+        cout << "Enter the two numbers : \n";  
+        cin >> x >> y;  
+        if (y == 0)  
+        {  
+            MyException z;  
+            throw z;  
+        }  
+        else  
+        {  
+            cout << "x / y = " << x/y << endl;  
+        }  
+    }  
+    catch(exception& e)  
+    {  
+        cout << e.what();  
+    }  
+}
+
+Output:
+Enter the two numbers :
+100
+5
+x / y = 20
+
+
+----THE END----
